@@ -1,0 +1,175 @@
+.add-book {
+    
+    width: 50%;
+    margin: 59px auto;
+}
+.add-book h1 {
+    text-align: center;
+    margin-bottom: 40px;
+}
+.add-form {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    width: 80%;
+    padding: 20px;
+    height: 110vh;
+}
+.add-form label  {
+    margin-right: 20px;
+}
+
+.submit {
+    width: 35%;
+    height: 55px;
+}
+
+.add-dialogue button {
+    width: 50px  !important;
+    height: 50px  !important;
+    border-radius: 50%  !important;
+    font-size: 24px  !important;
+    font-weight: bold  !important;
+    margin-left: 10px  !important;
+    cursor: pointer !important;
+    border: 1px solid black;
+
+}
+
+.add-dialouge-cont {
+    height: 200px !important; 
+    display: flex !important;
+    flex-direction: column ;
+    justify-content: space-between;
+}
+.add-dialouge-cont-auth {
+    height: 300px !important; 
+    display: flex !important;
+    flex-direction: column ;
+    justify-content: space-between;
+    width: 93%;
+}
+.author-row-inputs {
+    display: flex;
+    justify-content: space-between;
+
+}
+.add-new-publiser {
+    width: 94%;
+    padding-top: 10px;
+    padding-left: 30px;
+    padding-bottom: 40px;
+}
+.author-row-inputs .css-1z10yd4-MuiFormControl-root-MuiTextField-root {
+    margin-right: 20px;
+}
+.css-tlc64q-MuiPaper-root-MuiDialog-paper {
+    max-width: 1000px !important;
+    width: 65% !important;
+}
+.add-dialouge-cont {
+    width: 50%;
+}
+.add-new-author-cont {
+    display: flex;
+    flex-direction: column;
+    padding: 30px 3px 30px 30px;
+    width: 90%;
+}
+.select-box {
+    width: 48%;
+}
+.dates-auth {
+    width: 48%;
+}
+
+
+.find-book {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 65px;
+}
+.find-book h1 {
+    margin-bottom: 45px;
+}
+
+.find-book .find-form {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 350px;
+}
+
+.find-book .find-form .search-row {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.find-book .find-form .search-row  .word-search {
+    width: 60%;
+}
+.find-book .find-form .search-row .select-box {
+    width: 20%;
+}
+.search-row-not-first {
+    justify-content: start !important; 
+}
+.search-row-not-first .input-for-search {
+    width: 29%;
+    margin-right: 2%;
+    width: 29%;
+}
+.search-row-not-first .input-for-search:first-of-type {
+    margin-left: 28px;
+
+}
+.search-row-not-first  label{
+    display: block;
+    width: 102px;
+}
+.search-row:last-of-type {
+    width: 100%;
+    padding-left: 17% !important;
+}
+.search-row:last-of-type button {
+width: 29%;
+}
+.export-buttons {
+    padding-right: 13%;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 100px;
+}
+.export-buttons div {
+    display: flex;
+    width: 35%;
+    justify-content: space-between;
+    align-items: center;
+}
+.export-buttons div button {
+    width: 120px;
+}
+
+.tabel { 
+
+    width: 75% !important;
+    margin-top: 33px ;
+    margin-bottom: 40px;
+}
+.cell {
+    border: 2px solid #98bf21 !important;
+}
+.tabel button {
+    width: 100%;
+    height: 25px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    background-color: #a7c942;
+}
