@@ -173,3 +173,11 @@ width: 29%;
     border-radius: 4px;
     background-color: #a7c942;
 }
+.book-details {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    justify-content: space-around;
+    margin: auto;
+    height: 80vh;
+}
