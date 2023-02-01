@@ -8,58 +8,35 @@ import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
-
+import axios from "axios";
 import "../styles.css";
 const PaymentDetails = () => {
-  const publisher_mock = ["دار المعارف", "دار العماد", "دنديس"];
   const author_mock = ["Cash", "Credit Card", "Paypal"];
-
-  const [publisher, setPublisher] = useState("دار المعارف");
-  const [date, setDate] = useState(new Date(""));
-  const [author, setAuthor] = useState("author1");
-  const [price, setPrice] = useState(10);
-
-  const [open, setOpen] = React.useState(false);
-  const [openAuthor, setOpenAuthor] = useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleOpenAuthor = () => {
-    setOpenAuthor(true);
-  };
-
-  const handleCloseAuthor = () => {
-    setOpenAuthor(false);
-  };
-
-  const handelPublisher = (event) => {
-    setPublisher(event.target.value);
-  };
-
-  const handelDate = (newDate) => {
-    setDate(newDate);
-  };
+  const [paymentMethod, setPayment] = useState();
+  const [numberUnits, setNumberUnits] = useState();
+  const [price, setPrice] = useState();
 
   const handelAuthor = (event) => {
-    setAuthor(event.target.value);
+    setPayment(event.target.value);
   };
 
-  const handelPrice = (event) => {
-    setPrice(10);
+  const onSubmit = () => {
+    axios.post("http://localhost:3001/reserves", {
+      PaymentMethod: paymentMethod,
+      numberOfUnits: numberUnits,
+      unitPrice: price,
+      totalPrice: numberUnits * price,
+    });
   };
+
   return (
     <Box component="form" className="book-details">
       <TextField
         id="author-select"
         select
         label="Payment method"
-        value={author}
+        value={paymentMethod}
+        autoComplete="off"
         onChange={handelAuthor}
         helperText="Please choose payment method"
       >
@@ -73,14 +50,18 @@ const PaymentDetails = () => {
       <TextField
         id="avilable-units"
         label="Number of Units"
+        autoComplete="off"
         variant="outlined"
+        onChange={(e) => setNumberUnits(e.target.value)}
+        value={numberUnits}
       />
       <FormControl fullWidth sx={{ m: 1 }}>
         <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
         <OutlinedInput
           id="outlined-adornment-amount"
           value={price}
-          onChange={handelPrice}
+          placeholder="Price"
+          onChange={(e) => setPrice(e.target.value)}
           startAdornment={<InputAdornment position="start">$</InputAdornment>}
           label="Amount"
         />
@@ -89,14 +70,15 @@ const PaymentDetails = () => {
         <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
         <OutlinedInput
           id="outlined-adornment-amount"
-          value={price}
-          onChange={handelPrice}
+          autoComplete="off"
+          value={price * numberUnits}
           startAdornment={<InputAdornment position="start">$</InputAdornment>}
-          label="Amount"
+          label="Total Amount"
+          disabled={true}
         />
       </FormControl>
 
-      <Button className="submit" variant="contained">
+      <Button className="submit" variant="contained" onClick={onSubmit}>
         Reserve book
       </Button>
     </Box>

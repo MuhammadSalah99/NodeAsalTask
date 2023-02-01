@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import "./style.css";
 
-const TagInput = () => {
-  const [tags, setTags] = useState([]);
-
+const TagInput = ({ tags, setTags }) => {
   const handleKeyDown = (e) => {
     if (e.key !== "Enter") return;
     const value = e.target.value;
