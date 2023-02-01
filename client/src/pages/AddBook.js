@@ -19,6 +19,8 @@ import "./styles.css";
 import AddNewPublisher from "./dialouges/AddNewPublisher";
 import AddNewAuthor from "./dialouges/AddNewAuthor";
 import TagInput from "./tag input/TagInput";
+import { isUnitless } from "@mui/material/styles/cssUtils";
+import { useForm, Controller } from "react-hook-form";
 
 const AddBook = () => {
   const [listOfPublisher, setListOfPublisher] = useState([""]);
@@ -30,7 +32,7 @@ const AddBook = () => {
   const [date, setDate] = useState(new Date(""));
   const [author, setAuthor] = useState("");
   const [units, setUnits] = useState("");
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState("");
   const [authorId, setAuthorId] = useState();
   const [publisherId, setPublisherid] = useState();
   const [pdfFile, setPdfFile] = useState("");
@@ -67,14 +69,6 @@ const AddBook = () => {
     setOpen(false);
   };
 
-  const handleBookId = (event) => {
-    setBookId(event.target.value);
-  };
-
-  const handleBookTitle = (event) => {
-    setBookTitle(event.target.value);
-  };
-
   const handleOpenAuthor = () => {
     setOpenAuthor(true);
   };
@@ -83,36 +77,8 @@ const AddBook = () => {
     setOpenAuthor(false);
   };
 
-  const handelPublisher = (event) => {
-    let publir = listOfPublisher.filter((value) => {
-      return value.name === event.target.value;
-    });
-    setPublisherid(publir[0].id);
-    console.log(publisherId);
-
-    setPublisher(event.target.value);
-  };
-
   const handelDate = (newDate) => {
     setDate(newDate);
-  };
-
-  const handelAuthor = (event) => {
-    let authid = listOfAuthors.filter((value) => {
-      return value.fullName === event.target.value;
-    });
-    setAuthorId(authid[0].id);
-    console.log(authorId);
-
-    setAuthor(event.target.value);
-  };
-
-  const handleUnit = (event) => {
-    setUnits(event.target.value);
-  };
-
-  const handelPrice = (event) => {
-    setPrice(10);
   };
 
   const onSubmit = () => {
@@ -138,35 +104,52 @@ const AddBook = () => {
       });
   };
 
+  const validate = (data) => {
+    return data.length <= 0;
+  };
+
+  const validateNumbers = (data) => {
+    return data < 0;
+  };
+
   return (
     <div className="add-book">
       <h1>Add a new book</h1>
       <Box component="form" className="add-form">
         <TextField
           id="book-id"
+          error={validate(bookId)}
+          helperText={validate(bookId) ? "Book Id cant be empty" : ""}
           label="Book ID"
           variant="outlined"
           autoComplete="off"
           value={bookId}
-          onChange={handleBookId}
+          onChange={(e) => setBookId(e.target.value)}
         />
         <TextField
           id="book-title"
+          error={validate(bookTitle)}
+          helperText={validate(bookTitle) ? "Book Title cant be empty" : ""}
           label="Book Title"
           autoComplete="off"
           variant="outlined"
           value={bookTitle}
-          onChange={handleBookTitle}
+          onChange={(e) => setBookTitle(e.target.value)}
         />
         <div className="add-dialogue">
           <TextField
             id="publisher-select"
             select
+            error={validate(publisher)}
+            helperText={
+              validate(publisher)
+                ? "Publisher cant be empty"
+                : "Please add the publisher"
+            }
             label="Select"
             autoComplete="off"
             value={publisher}
-            onChange={handelPublisher}
-            helperText="Please add the publisher"
+            onChange={(e) => setPublisher(e.target.value)}
           >
             {listOfPublisher.map((option, key) => (
               <MenuItem key={key} value={option.name}>
@@ -196,6 +179,10 @@ const AddBook = () => {
             inputFormat="MM/dd/yyyy"
             value={date}
             onChange={handelDate}
+            error={validate(date)}
+            helperText={
+              validate(date) ? "Date cant be empty" : "Please add the date"
+            }
             renderInput={(params) => <TextField {...params} />}
           />
         </LocalizationProvider>
@@ -204,10 +191,15 @@ const AddBook = () => {
             id="author-select"
             select
             label="Select"
+            error={validate(author)}
+            helperText={
+              validate(author)
+                ? "Author cant be empty"
+                : "Please add the author"
+            }
             autoComplete="off"
             value={author}
-            onChange={handelAuthor}
-            helperText="Please add the author"
+            onChange={(e) => setAuthor(e.target.value)}
           >
             {listOfAuthors.map((option, key) => (
               <MenuItem key={key} value={option.fullName}>
@@ -247,13 +239,25 @@ const AddBook = () => {
           id="avilable-units"
           label="Available  Units"
           variant="outlined"
+          error={validateNumbers(units)}
+          helperText={
+            validateNumbers(units)
+              ? "Units should be only 0 or more"
+              : "Please add the book amount"
+          }
           autoComplete="off"
           value={units}
-          onChange={handleUnit}
+          onChange={(e) => setUnits(e.target.value)}
         />
         <FormControl fullWidth sx={{ m: 1 }}>
           <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
           <OutlinedInput
+            error={validateNumbers(price)}
+            helperText={
+              validateNumbers(price)
+                ? "Price should be only 0 or more"
+                : "Please add the price"
+            }
             id="outlined-adornment-amount"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
@@ -262,6 +266,7 @@ const AddBook = () => {
             label="Amount"
           />
         </FormControl>
+        {bookId}
         <Button className="submit" variant="contained" onClick={onSubmit}>
           Submit Book
         </Button>

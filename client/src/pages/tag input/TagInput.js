@@ -15,6 +15,10 @@ const TagInput = ({ tags, setTags }) => {
     setTags(tags.filter((el, i) => i !== index));
   };
 
+  const validateTags = (data) => {
+    return data.length <= 0;
+  };
+
   return (
     <div className="tags-input-container">
       {tags.map((tag, index) => (
@@ -27,6 +31,12 @@ const TagInput = ({ tags, setTags }) => {
       ))}
       <TextField
         onKeyDown={handleKeyDown}
+        error={validateTags(tags)}
+        helperText={
+          validateTags(tags)
+            ? "Tags cant be empty "
+            : "Please add the book tags"
+        }
         type="text"
         label="Book tags"
         className="tags-input"
