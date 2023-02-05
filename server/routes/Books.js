@@ -78,11 +78,13 @@ router.get("/searchTitle/:BookTitle", async (req, res) => {
   const unitEnd = parseInt(req.query.unitEnd);
   const BookTitle = req.params.BookTitle;
   const listOfBooks = await Book.findAll({
-    [Op.and]: [
-      { BookTitle: { [Op.like]: `%${BookTitle}%` } },
-      { Price: { [Op.between]: [priceStart, priceEnd] } },
-      { Units: { [Op.between]: [unitStart, unitEnd] } },
-    ],
+    where: {
+      [Op.and]: [
+        { BookTitle: { [Op.like]: `%${BookTitle}%` } },
+        { Price: { [Op.between]: [priceStart, priceEnd] } },
+        { Units: { [Op.between]: [unitStart, unitEnd] } },
+      ],
+    },
   });
   res.json(listOfBooks);
 });
@@ -94,11 +96,13 @@ router.get("/tags/:Tags", async (req, res) => {
   const unitEnd = parseInt(req.query.unitEnd);
   const Tags = req.params.Tags;
   const listOfBooks = await Book.findAll({
-    [Op.and]: [
-      { Tags: { [Op.like]: "%" + Tags + "%" } },
-      { Price: { [Op.between]: [priceStart, priceEnd] } },
-      { Units: { [Op.between]: [unitStart, unitEnd] } },
-    ],
+    where: {
+      [Op.and]: [
+        { Tags: { [Op.like]: "%" + phrase + "%" } },
+        { Price: { [Op.between]: [priceStart, priceEnd] } },
+        { Units: { [Op.between]: [unitStart, unitEnd] } },
+      ],
+    },
   });
   res.json(listOfBooks);
 });
