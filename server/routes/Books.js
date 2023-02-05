@@ -13,11 +13,13 @@ router.get("/search/:phrase", async (req, res) => {
   const phrase = req.params.phrase;
   const listOfBooks = await Book.findAll({
     where: {
-      BookId: { [Op.like]: `%${phrase}%` },
-      BookTitle: { [Op.like]: `%${phrase}%` },
-      BookPublisher: { [Op.like]: `%${phrase}%` },
-      BookAuthor: { [Op.like]: `%${phrase}%` },
-      PublishDate: { [Op.like]: `%${phrase}%` },
+      [Op.or]: [
+        { BookId: { [Op.like]: "%" + phrase + "%" } },
+        { BookTitle: { [Op.like]: "%" + phrase + "%" } },
+        { BookPublisher: { [Op.like]: "%" + phrase + "%" } },
+        { BookAuthor: { [Op.like]: "%" + phrase + "%" } },
+        { PublishDate: { [Op.like]: "%" + phrase + "%" } },
+      ],
     },
   });
   res.json(listOfBooks);
