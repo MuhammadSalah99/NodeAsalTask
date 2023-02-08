@@ -181,3 +181,7 @@ width: 29%;
     margin: auto;
     height: 80vh;
 }
+.pagen {
+    margin-top: -10px !important;
+    padding-bottom: 50px;
+}

@@ -134,6 +134,35 @@ router.get("/searchPublisher/:BookPublisher", async (req, res) => {
     });
 });
 
+router.get("/searchAuth/:BookAuthor", async (req, res) => {
+  const { page, size, priceStart, priceEnd, unitStart, unitEnd } = req.query;
+
+  const BookAuthor = req.params.BookAuthor;
+  const { limit, offset } = getPagination(page, size);
+
+  Book.findAndCountAll({
+    limit,
+    offset,
+    where: {
+      [Op.and]: [
+        { BookAuthor: { [Op.like]: `%${BookAuthor}%` } },
+        { Price: { [Op.between]: [parseInt(priceStart), parseInt(priceEnd)] } },
+        { Units: { [Op.between]: [parseInt(unitStart), parseInt(unitEnd)] } },
+      ],
+    },
+  })
+    .then((data) => {
+      const response = getPagingData(data, page, limit);
+      res.send(response);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving tutorials.",
+      });
+    });
+});
+
 router.get("/searchTitle/:BookTitle", async (req, res) => {
   const { page, size, priceStart, priceEnd, unitStart, unitEnd } = req.query;
 
