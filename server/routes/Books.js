@@ -40,15 +40,17 @@ router.get("/", async (req, res) => {
 
 router.get("/search/:phrase", async (req, res) => {
   const phrase = req.params.phrase;
-  const priceStart = parseInt(req.query.priceStart);
-  const priceEnd = parseInt(req.query.priceEnd);
-  const unitStart = parseInt(req.query.unitStart);
-  const unitEnd = parseInt(req.query.unitEnd);
-  const listOfBooks = await Book.findAll({
+  const { page, size, priceStart, priceEnd, unitStart, unitEnd } = req.query;
+
+  const { limit, offset } = getPagination(page, size);
+
+  Book.findAndCountAll({
+    limit,
+    offset,
     where: {
       [Op.and]: [
-        { Price: { [Op.between]: [priceStart, priceEnd] } },
-        { Units: { [Op.between]: [unitStart, unitEnd] } },
+        { Price: { [Op.between]: [parseInt(priceStart), parseInt(priceEnd)] } },
+        { Units: { [Op.between]: [parseInt(unitStart), parseInt(unitEnd)] } },
         {
           [Op.or]: [
             { BookId: { [Op.like]: "%" + phrase + "%" } },
@@ -60,80 +62,136 @@ router.get("/search/:phrase", async (req, res) => {
         },
       ],
     },
-  });
-  res.json(listOfBooks);
+  })
+    .then((data) => {
+      const response = getPagingData(data, page, limit);
+      res.send(response);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving tutorials.",
+      });
+    });
 });
 
 router.get("/searchId/:BookId", async (req, res) => {
-  const priceStart = parseInt(req.query.priceStart);
-  const priceEnd = parseInt(req.query.priceEnd);
-  const unitStart = parseInt(req.query.unitStart);
-  const unitEnd = parseInt(req.query.unitEnd);
+  const { page, size, priceStart, priceEnd, unitStart, unitEnd } = req.query;
+
   const BookId = req.params.BookId;
-  const listOfBooks = await Book.findAll({
+
+  const { limit, offset } = getPagination(page, size);
+
+  Book.findAndCountAll({
+    limit,
+    offset,
     where: {
       [Op.and]: [
         { BookId: { [Op.like]: `%${BookId}%` } },
-        { Price: { [Op.between]: [priceStart, priceEnd] } },
-        { Units: { [Op.between]: [unitStart, unitEnd] } },
+        { Price: { [Op.between]: [parseInt(priceStart), parseInt(priceEnd)] } },
+        { Units: { [Op.between]: [parseInt(unitStart), parseInt(unitEnd)] } },
       ],
     },
-  });
-  res.json(listOfBooks);
+  })
+    .then((data) => {
+      const response = getPagingData(data, page, limit);
+      res.send(response);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving tutorials.",
+      });
+    });
 });
 
 router.get("/searchPublisher/:BookPublisher", async (req, res) => {
-  const priceStart = parseInt(req.query.priceStart);
-  const priceEnd = parseInt(req.query.priceEnd);
-  const unitStart = parseInt(req.query.unitStart);
-  const unitEnd = parseInt(req.query.unitEnd);
+  const { page, size, priceStart, priceEnd, unitStart, unitEnd } = req.query;
+
   const BookPublisher = req.params.BookPublisher;
-  const listOfBooks = await Book.findAll({
+  const { limit, offset } = getPagination(page, size);
+
+  Book.findAndCountAll({
+    limit,
+    offset,
     where: {
       [Op.and]: [
         { BookPublisher: { [Op.like]: `%${BookPublisher}%` } },
-        { Price: { [Op.between]: [priceStart, priceEnd] } },
-        { Units: { [Op.between]: [unitStart, unitEnd] } },
+        { Price: { [Op.between]: [parseInt(priceStart), parseInt(priceEnd)] } },
+        { Units: { [Op.between]: [parseInt(unitStart), parseInt(unitEnd)] } },
       ],
     },
-  });
-  res.json(listOfBooks);
+  })
+    .then((data) => {
+      const response = getPagingData(data, page, limit);
+      res.send(response);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving tutorials.",
+      });
+    });
 });
 
 router.get("/searchTitle/:BookTitle", async (req, res) => {
-  const priceStart = parseInt(req.query.priceStart);
-  const priceEnd = parseInt(req.query.priceEnd);
-  const unitStart = parseInt(req.query.unitStart);
-  const unitEnd = parseInt(req.query.unitEnd);
+  const { page, size, priceStart, priceEnd, unitStart, unitEnd } = req.query;
+
   const BookTitle = req.params.BookTitle;
-  const listOfBooks = await Book.findAll({
+
+  const { limit, offset } = getPagination(page, size);
+
+  Book.findAndCountAll({
+    limit,
+    offset,
     where: {
       [Op.and]: [
         { BookTitle: { [Op.like]: `%${BookTitle}%` } },
-        { Price: { [Op.between]: [priceStart, priceEnd] } },
-        { Units: { [Op.between]: [unitStart, unitEnd] } },
+        { Price: { [Op.between]: [parseInt(priceStart), parseInt(priceEnd)] } },
+        { Units: { [Op.between]: [parseInt(unitStart), parseInt(unitEnd)] } },
       ],
     },
-  });
-  res.json(listOfBooks);
+  })
+    .then((data) => {
+      const response = getPagingData(data, page, limit);
+      res.send(response);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving tutorials.",
+      });
+    });
 });
 
 router.get("/tags/:Tags", async (req, res) => {
-  const priceStart = parseInt(req.query.priceStart);
-  const priceEnd = parseInt(req.query.priceEnd);
-  const unitStart = parseInt(req.query.unitStart);
-  const unitEnd = parseInt(req.query.unitEnd);
+  const { page, size, priceStart, priceEnd, unitStart, unitEnd } = req.query;
+
   const Tags = req.params.Tags;
-  const listOfBooks = await Book.findAll({
+
+  const { limit, offset } = getPagination(page, size);
+
+  Book.findAndCountAll({
+    limit,
+    offset,
     where: {
       [Op.and]: [
-        { Tags: { [Op.like]: "%" + phrase + "%" } },
-        { Price: { [Op.between]: [priceStart, priceEnd] } },
-        { Units: { [Op.between]: [unitStart, unitEnd] } },
+        { Tags: { [Op.like]: "%" + Tags + "%" } },
+        { Price: { [Op.between]: [parseInt(priceStart), parseInt(priceEnd)] } },
+        { Units: { [Op.between]: [parseInt(unitStart), parseInt(unitEnd)] } },
       ],
     },
-  });
-  res.json(listOfBooks);
+  })
+    .then((data) => {
+      const response = getPagingData(data, page, limit);
+      res.send(response);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving tutorials.",
+      });
+    });
 });
 
 router.post("/", (req, res) => {
