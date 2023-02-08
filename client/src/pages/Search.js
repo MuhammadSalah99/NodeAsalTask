@@ -54,14 +54,21 @@ const Search = () => {
   const [listBooks, setListBooks] = useState([]);
   const [searchType, setSearchType] = useState("Any");
   const [books, setBooks] = useState([]);
+  const [pages, setPages] = useState(0);
+  const [pageNums, setPageNums] = useState([]);
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [priceStart, setPriceStart] = useState("");
+
+  const [priceEnd, setpriceEnd] = useState("");
+
+  const [unitStart, setUnitStart] = useState("");
+  const [unitEnd, setUnitEnd] = useState("");
 
   useEffect(() => {
     axios
       .get("http://localhost:3001/books")
       .then((res) => {
-        setListBooks(res.data);
         console.log(listBooks);
       })
       .catch((err) => {
@@ -73,53 +80,115 @@ const Search = () => {
     setSearchType(e.target.value);
     console.log(searchType);
   };
-  const handleSearch = () => {
+  const handleSearch = (num) => {
     switch (searchType) {
       case "Any":
-        setBooks(listBooks);
+        axios
+          .get(
+            `http://localhost:3001/books/search/${searchTerm}?page=${num}&size=4&priceStart=${priceStart}&priceEnd=${priceEnd}&unitStart=${unitStart}&unitEnd=${unitEnd}`
+          )
+          .then((res) => {
+            let books = res.data.books;
+            console.log(res.data);
+            setBooks(books);
+            setListBooks(res.data.totalPages);
+            makePages(res.data.totalPages);
+            setPages(num);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
         break;
       case "Book title":
-        let searchTitle = listBooks.filter((data) => {
-          return data.BookTitle == searchTerm;
-        });
-
-        setBooks(searchTitle);
+        axios
+          .get(
+            `http://localhost:3001/books/searchTitle/${searchTerm}?page=${num}&size=4&priceStart=${priceStart}&priceEnd=${priceEnd}&unitStart=${unitStart}&unitEnd=${unitEnd}`
+          )
+          .then((res) => {
+            let books = res.data.books;
+            console.log(res.data);
+            setBooks(books);
+            setListBooks(res.data.totalPages);
+            makePages(res.data.totalPages);
+            setPages(num);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
         break;
       case "Book Publisher":
-        let searchPublisher = listBooks.filter((data) => {
-          return data.BookPublisher == searchTerm;
-        });
-
-        setBooks(searchPublisher);
+        axios
+          .get(
+            `http://localhost:3001/books/searchPublisher/${searchTerm}?page=${num}&size=4&priceStart=${priceStart}&priceEnd=${priceEnd}&unitStart=${unitStart}&unitEnd=${unitEnd}`
+          )
+          .then((res) => {
+            let books = res.data.books;
+            console.log(res.data);
+            setBooks(books);
+            setListBooks(res.data.totalPages);
+            makePages(res.data.totalPages);
+            setPages(num);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
         break;
       case "Book Author":
-        let searchAuth = listBooks.filter((data) => {
-          return data.BookAuthor == searchTerm;
-        });
-
-        setBooks(searchAuth);
+        axios
+          .get(
+            `http://localhost:3001/books/searchAuth/${searchTerm}?page=${num}&size=4&priceStart=${priceStart}&priceEnd=${priceEnd}&unitStart=${unitStart}&unitEnd=${unitEnd}`
+          )
+          .then((res) => {
+            let books = res.data.books;
+            console.log(res.data);
+            setBooks(books);
+            setListBooks(res.data.totalPages);
+            makePages(res.data.totalPages);
+            setPages(num);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
         break;
       case "Tags":
-        let searchTag = listBooks.filter((data) => {
-          return data.Tags == searchTerm;
-        });
-
-        setBooks(searchTag);
+        axios
+          .get(
+            `http://localhost:3001/books/tags/${searchTerm}?page=${num}&size=4&priceStart=${priceStart}&priceEnd=${priceEnd}&unitStart=${unitStart}&unitEnd=${unitEnd}`
+          )
+          .then((res) => {
+            let books = res.data.books;
+            console.log(res.data);
+            setBooks(books);
+            setListBooks(res.data.totalPages);
+            makePages(res.data.totalPages);
+            setPages(num);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
         break;
     }
 
     console.log("test");
     console.log(books);
   };
+
+  const makePages = (num) => {
+    let arr = [];
+    for (let i = 1; i <= num; i++) {
+      arr.push(i);
+    }
+    setPageNums(arr);
+  };
+
+  const changePage = async (e, num) => {
+    e.preventDefault();
+    setPages(num);
+  };
+
   return (
     <div className="find-book">
       <h1>Find a book</h1>
-      {/* <ReactSearchBox
-        placeholder="Placeholder"
-        value="Doe"
-        data={listBooks}
-        callback={(record) => console.log(record)}
-      /> */}
       <Box component="form" className="find-form">
         <div className="search-row">
           <label>Search by word</label>
@@ -158,12 +227,16 @@ const Search = () => {
             autoComplete="off"
             label="Start with "
             variant="outlined"
+            value={priceStart}
+            onChange={(e) => setPriceStart(e.target.value)}
           />
           <TextField
             className="input-for-search"
             id="book-id"
             label="End with"
             variant="outlined"
+            value={priceEnd}
+            onChange={(e) => setpriceEnd(e.target.value)}
           />
         </div>
         <div className="search-row search-row-not-first">
@@ -173,22 +246,31 @@ const Search = () => {
             id="book-id"
             label="Start with"
             autoComplete="off"
+            value={unitStart}
             variant="outlined"
+            onChange={(e) => setUnitStart(e.target.value)}
           />
           <TextField
             className="input-for-search"
             id="book-id"
             autoComplete="off"
             label="End with"
+            value={unitEnd}
+            onChange={(e) => setUnitEnd(e.target.value)}
             variant="outlined"
           />
         </div>
         <div className="search-row">
-          <Button className="search" variant="contained" onClick={handleSearch}>
+          <Button
+            className="search"
+            variant="contained"
+            onClick={() => handleSearch(0)}
+          >
             Search
           </Button>
         </div>
       </Box>
+
       {books.length > 0 && (
         <div className="export-buttons">
           <div>
@@ -267,6 +349,21 @@ const Search = () => {
           </Table>
         </TableContainer>
       )}
+      <div className="export-buttons pagen">
+        {pages > 0 && (
+          <Button onClick={(e) => handleSearch(pages - 1)}>prev</Button>
+        )}
+        {pageNums.map((page) => {
+          return (
+            <Button className="" onClick={(e) => handleSearch(page - 1)}>
+              {page}
+            </Button>
+          );
+        })}
+        {pages != pageNums.length - 1 && (
+          <Button onClick={(e) => handleSearch(pages + 1)}>next</Button>
+        )}
+      </div>
     </div>
   );
 };
