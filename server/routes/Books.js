@@ -4,9 +4,38 @@ const router = express.Router();
 const { Book } = require("../models");
 const { Op } = require("sequelize");
 
+const getPagination = (page, size) => {
+  const limit = size ? +size : 5;
+  const offset = page ? page * limit : 1;
+
+  return { limit, offset };
+};
+
+const getPagingData = (data, page, limit) => {
+  const { count: totalItems, rows: books } = data;
+  const currentPage = page ? +page : 0;
+  const totalPages = Math.ceil(totalItems / limit);
+
+  return { totalItems, books, totalPages, currentPage };
+};
+
 router.get("/", async (req, res) => {
-  const listOfBooks = await Book.findAll();
-  res.json(listOfBooks);
+  const { page, size } = req.query;
+  const { limit, offset } = getPagination(page, size);
+
+  Book.findAndCountAll({ limit, offset })
+    .then((data) => {
+      const response = getPagingData(data, page, limit);
+      res.send(response);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving tutorials.",
+      });
+    });
+
+  // res.json(listOfBooks);
 });
 
 router.get("/search/:phrase", async (req, res) => {
