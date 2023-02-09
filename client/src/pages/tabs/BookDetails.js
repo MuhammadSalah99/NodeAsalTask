@@ -29,7 +29,7 @@ const BookDetails = () => {
   const [price, setPrice] = useState(10);
   const [listBooks, setListBooks] = useState([]);
   const [avlUnits, setAvlUnits] = useState();
-  const [unitsReq, setUnitsReq] = useState(1);
+  const [unitsReq, setUnitsReq] = useState();
 
   useEffect(() => {
     axios
