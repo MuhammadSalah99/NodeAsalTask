@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Search from "./pages/Search";
 import Reserve from "./pages/Reserve";
 import Navbar from "./components/Navbar";
-
+import ReserveSeach from "./pages/ReserveSearch";
 function App() {
   return (
     <BrowserRouter className="App">
@@ -14,6 +14,7 @@ function App() {
           <Route path="/" element={<AddBook />}></Route>
           <Route path="/search" element={<Search />}></Route>
           <Route path="/reserve" element={<Reserve />}></Route>
+          <Route path="/reserve/:id" element={<ReserveSeach />}></Route>
         </Routes>
       </div>
     </BrowserRouter>

@@ -12,6 +12,7 @@ import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
+import { useParams } from "react-router-dom";
 import "../styles.css";
 
 const formatResult = (item) => {
@@ -23,24 +24,44 @@ const formatResult = (item) => {
 };
 
 const BookDetails = () => {
-  const [publisher, setPublisher] = useState("دار المعارف");
+  let { id } = useParams();
+
+  const [publisher, setPublisher] = useState(" ");
   const [date, setDate] = useState(new Date(""));
-  const [author, setAuthor] = useState("author1");
-  const [price, setPrice] = useState(10);
+  const [author, setAuthor] = useState("");
+  const [price, setPrice] = useState();
   const [listBooks, setListBooks] = useState([]);
   const [avlUnits, setAvlUnits] = useState();
   const [unitsReq, setUnitsReq] = useState();
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/books")
-      .then((res) => {
-        setListBooks(res.data);
-        console.log(listBooks);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    console.log(id);
+    if (id != undefined) {
+      axios
+        .get(`http://localhost:3001/books/${id}`)
+        .then((res) => {
+          setPublisher(res.BookPublisher);
+          setAvlUnits(res.Units);
+          setAuthor(res.BookAuthor);
+          setDate(res.PublishDate);
+          setPrice(res.Price);
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else if (id == undefined) {
+      console.log("test");
+      axios
+        .get("http://localhost:3001/books")
+        .then((res) => {
+          setListBooks(res.data);
+          console.log(listBooks);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }, []);
 
   const handleOnSearch = (string, results) => {

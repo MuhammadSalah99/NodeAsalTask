@@ -16,6 +16,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import { Link } from "react-router-dom";
 
 import axios from "axios";
 import ReactSearchBox from "react-search-box";
@@ -341,7 +342,11 @@ const Search = () => {
                     {book.Price}
                   </StyledTableCell>
                   <StyledTableCell align="right" className="cell">
-                    {book.Units > 0 && <button>reserve</button>}
+                    {book.Units > 0 && (
+                      <Link to={`/reserve/${book.id}`} className="">
+                        reserve
+                      </Link>
+                    )}
                   </StyledTableCell>
                 </StyledTableRow>
               ))}
