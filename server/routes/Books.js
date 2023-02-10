@@ -38,6 +38,24 @@ router.get("/", async (req, res) => {
   // res.json(listOfBooks);
 });
 
+router.get("/:id", async (req, res) => {
+  const id = req.params.id;
+
+  Book.findByPk(id)
+    .then((data) => {
+      const response = data;
+      res.send(response);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving tutorials.",
+      });
+    });
+
+  // res.json(listOfBooks);
+});
+
 router.get("/search/:phrase", async (req, res) => {
   const phrase = req.params.phrase;
   const { page, size, priceStart, priceEnd, unitStart, unitEnd } = req.query;
