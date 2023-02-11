@@ -14,14 +14,15 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import BuyerInfo from "./form/BuyerInfo";
 
-const Reserve = () => {
+const ReserveSearch = () => {
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
   const [book, setBook] = React.useState({});
   const [unitReq, setUnitReq] = React.useState(0);
   const [totalPrice, setTotalPrice] = React.useState(0);
   const [unitPrice, setUnitPrice] = React.useState(0);
-  let { id } = useParams();
+  const [allUnits, setAll] = React.useState(0);
+  const [buyId, setBuyId] = React.useState(0);
 
   const [step, setStep] = React.useState(0);
 
@@ -44,11 +45,18 @@ const Reserve = () => {
           setUnitPrice={setUnitPrice}
           setTotalPrice={setTotalPrice}
           setUnitReq={setUnitReq}
+          setAll={setAll}
         ></BookInfro>
       );
       break;
     case 1:
-      formStep = <BuyerInfo step={step} setStep={setStep}></BuyerInfo>;
+      formStep = (
+        <BuyerInfo
+          step={step}
+          setStep={setStep}
+          setBuyId={setBuyId}
+        ></BuyerInfo>
+      );
       break;
     case 2:
       formStep = (
@@ -58,6 +66,8 @@ const Reserve = () => {
           unitReq={unitReq}
           totalPrice={totalPrice}
           unitPrice={unitPrice}
+          allUnits={allUnits}
+          buyId={buyId}
         ></PaymentDetails>
       );
       break;
@@ -66,4 +76,4 @@ const Reserve = () => {
   return <Box centered>{formStep}</Box>;
 };
 
-export default Reserve;
+export default ReserveSearch;

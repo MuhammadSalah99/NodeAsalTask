@@ -6,7 +6,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import axios from "axios";
 import Button from "@mui/material/Button";
-const BuyerInfo = ({ step, setStep }) => {
+const BuyerInfo = ({ step, setStep, setBuyId }) => {
   const [fullName, setFullName] = useState();
   const [address, setAddress] = useState();
   const [phoneNum, setPhoneNum] = useState();
@@ -17,20 +17,24 @@ const BuyerInfo = ({ step, setStep }) => {
     setDate(newDate);
   };
   const onSubmit = () => {
-    // axios
-    //   .post("http://localhost:3001/buyers", {
-    //     fullName: fullName,
-    //     address: address,
-    //     phoneNumber: phoneNum,
-    //     purchaseDate: date,
-    //     NationalId: ID,
-    //   })
-    //   .then((res) => {
-    //     console.log(res);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
+    axios
+      .post("http://localhost:3001/buyers", {
+        fullName: fullName,
+        address: address,
+        phoneNumber: phoneNum,
+        purchaseDate: date,
+        NationalId: ID,
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    axios.get("http://localhost:3001/buyers").then((res) => {
+      console.log(res.data[res.data.length - 1].id + 1);
+      setBuyId(res.data[res.data.length - 1].id + 1);
+    });
     setStep(step + 1);
   };
 

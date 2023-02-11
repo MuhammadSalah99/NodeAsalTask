@@ -12,7 +12,15 @@ import axios from "axios";
 import "../styles.css";
 import { useParams } from "react-router-dom";
 
-const PaymentDetails = ({ step, setStep, unitPrice, totalPrice, unitReq }) => {
+const PaymentDetails = ({
+  step,
+  setStep,
+  unitPrice,
+  totalPrice,
+  unitReq,
+  allUnits,
+  buyId,
+}) => {
   let { id } = useParams();
 
   const author_mock = ["Cash", "Credit Card", "Paypal"];
@@ -24,13 +32,26 @@ const PaymentDetails = ({ step, setStep, unitPrice, totalPrice, unitReq }) => {
     setPayment(event.target.value);
   };
 
-  const onSubmit = () => {
+  let newUnits = () => {
+    console.log(allUnits);
+    console.log(unitReq);
+    let num = parseInt(allUnits) - parseInt(unitReq);
+    return num;
+  };
+
+  const onSubmit = async () => {
+    const res = await axios
+      .put(`http://localhost:3001/books/${id}`, { Units: newUnits() })
+      .then((res) => console.log(res));
+    console.log(res);
+    console.log(newUnits());
     axios.post("http://localhost:3001/reserves", {
       PaymentMethod: paymentMethod,
       numberOfUnits: unitReq,
       unitPrice: unitPrice,
       totalPrice: totalPrice,
       BookId: id,
+      BuyerId: buyId,
     });
   };
 

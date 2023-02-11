@@ -21,6 +21,7 @@ const BookInfro = ({
   setUnitPrice,
   setTotalPrice,
   setUnitReq,
+  setAll,
 }) => {
   let { id } = useParams();
   const [book, setBook] = useState({});
@@ -41,7 +42,7 @@ const BookInfro = ({
   console.log(book);
 
   const isUnitsValid = (units) => {
-    return units <= 0 || units >= parseInt(book.Units);
+    return units <= 0 || units > parseInt(book.Units);
   };
 
   const handelDate = (newDate) => {
@@ -54,6 +55,7 @@ const BookInfro = ({
     setTotalPrice(unitsReq * parseInt(book.Price));
     setBook(book);
     setUnitReq(unitsReq);
+    setAll(book.Units);
   };
 
   return (

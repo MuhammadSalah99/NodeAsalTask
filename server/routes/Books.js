@@ -242,7 +242,8 @@ router.get("/tags/:Tags", async (req, res) => {
 });
 
 router.put("/:id", function (req, res, next) {
-  Book.update({ title: req.body.title }, { where: req.params.id })
+  let _id = parseInt(req.params.id);
+  Book.update({ Units: req.body.Units }, { where: { id: _id } })
     .then(function (rowsUpdated) {
       res.json(rowsUpdated);
     })
