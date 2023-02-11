@@ -21,6 +21,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
   });
-
+  Buyer.associate = (models) => {
+    Buyer.hasMany(models.Reserve);
+  };
   return Buyer;
 };

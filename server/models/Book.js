@@ -1,5 +1,3 @@
-const { publisher } = require("./Publisher.js");
-
 module.exports = (sequelize, DataTypes) => {
   const Book = sequelize.define("Book", {
     BookId: {

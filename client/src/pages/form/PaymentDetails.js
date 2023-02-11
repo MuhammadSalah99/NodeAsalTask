@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
@@ -10,7 +10,8 @@ import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import "../styles.css";
-import { useAsyncError } from "react-router-dom";
+import { useParams } from "react-router-dom";
+
 const PaymentDetails = ({
   step,
   setStep,
@@ -19,8 +20,9 @@ const PaymentDetails = ({
   unitReq,
   allUnits,
   buyId,
-  bookId,
 }) => {
+  let { id } = useParams();
+
   const author_mock = ["Cash", "Credit Card", "Paypal"];
   const [paymentMethod, setPayment] = useState();
   const [numberUnits, setNumberUnits] = useState();
@@ -39,7 +41,7 @@ const PaymentDetails = ({
 
   const onSubmit = async () => {
     const res = await axios
-      .put(`http://localhost:3001/books/${bookId}`, { Units: newUnits() })
+      .put(`http://localhost:3001/books/${id}`, { Units: newUnits() })
       .then((res) => console.log(res));
     console.log(res);
     console.log(newUnits());
@@ -48,7 +50,7 @@ const PaymentDetails = ({
       numberOfUnits: unitReq,
       unitPrice: unitPrice,
       totalPrice: totalPrice,
-      BookId: bookId,
+      BookId: id,
       BuyerId: buyId,
     });
   };
@@ -73,6 +75,7 @@ const PaymentDetails = ({
 
       <TextField
         id="avilable-units"
+        label="Number of Units"
         autoComplete="off"
         variant="outlined"
         value={unitReq}
@@ -84,7 +87,6 @@ const PaymentDetails = ({
           id="outlined-adornment-amount"
           value={unitPrice}
           placeholder="Price"
-          onChange={(e) => setPrice(e.target.value)}
           startAdornment={<InputAdornment position="start">$</InputAdornment>}
           label="Amount"
           disabled={true}

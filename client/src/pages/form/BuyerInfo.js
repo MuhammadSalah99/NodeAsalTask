@@ -6,9 +6,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import axios from "axios";
 import Button from "@mui/material/Button";
-
-import "../styles.css";
-const BuyerDetails = ({ step, setStep, setBuyId }) => {
+const BuyerInfo = ({ step, setStep, setBuyId }) => {
   const [fullName, setFullName] = useState();
   const [address, setAddress] = useState();
   const [phoneNum, setPhoneNum] = useState();
@@ -18,7 +16,6 @@ const BuyerDetails = ({ step, setStep, setBuyId }) => {
   const handelDate = (newDate) => {
     setDate(newDate);
   };
-
   const onSubmit = () => {
     axios
       .post("http://localhost:3001/buyers", {
@@ -99,4 +96,4 @@ const BuyerDetails = ({ step, setStep, setBuyId }) => {
   );
 };
 
-export default BuyerDetails;
+export default BuyerInfo;
