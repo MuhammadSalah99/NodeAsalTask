@@ -241,6 +241,13 @@ router.get("/tags/:Tags", async (req, res) => {
     });
 });
 
+router.put("/:id", function (req, res, next) {
+  Book.update({ title: req.body.title }, { where: req.params.id })
+    .then(function (rowsUpdated) {
+      res.json(rowsUpdated);
+    })
+    .catch(next);
+});
 router.post("/", (req, res) => {
   const book = req.body;
   Book.create(book);
