@@ -8,7 +8,7 @@ import axios from "axios";
 import Button from "@mui/material/Button";
 
 import "../styles.css";
-const BuyerDetails = () => {
+const BuyerDetails = ({ step, setStep, setBuyId }) => {
   const [fullName, setFullName] = useState();
   const [address, setAddress] = useState();
   const [phoneNum, setPhoneNum] = useState();
@@ -34,6 +34,11 @@ const BuyerDetails = () => {
       .catch((err) => {
         console.log(err);
       });
+    axios.get("http://localhost:3001/buyers").then((res) => {
+      console.log(res.data[res.data.length - 1].id + 1);
+      setBuyId(res.data[res.data.length - 1].id + 1);
+    });
+    setStep(step + 1);
   };
 
   return (

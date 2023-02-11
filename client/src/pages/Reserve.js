@@ -42,6 +42,14 @@ function a11yProps(index) {
   };
 }
 const Reserve = () => {
+  const [book, setBook] = React.useState({});
+  const [unitReq, setUnitReq] = React.useState(0);
+  const [totalPrice, setTotalPrice] = React.useState(0);
+  const [unitPrice, setUnitPrice] = React.useState(0);
+  const [allUnits, setAll] = React.useState(0);
+  const [buyId, setBuyId] = React.useState(0);
+  const [bookId, setBookId] = React.useState(1);
+  const [step, setStep] = React.useState(0);
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
 
@@ -52,39 +60,49 @@ const Reserve = () => {
   const handleChangeIndex = (index) => {
     setValue(index);
   };
-  return (
-    <Box centered>
-      <AppBar position="static">
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          indicatorColor="secondary"
-          textColor="inherit"
-          variant="fullWidth"
-          aria-label="full width tabs example"
-        >
-          <Tab label="Book details" {...a11yProps(0)} />
-          <Tab label="Buyer details" {...a11yProps(1)} />
-          <Tab label="Payment details" {...a11yProps(2)} />
-        </Tabs>
-      </AppBar>
-      <SwipeableViews
-        axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-        index={value}
-        onChangeIndex={handleChangeIndex}
-      >
-        <TabPanel value={value} index={0} dir={theme.direction}>
-          <BookDetails />
-        </TabPanel>
-        <TabPanel value={value} index={1} dir={theme.direction}>
-          <BuyerDetails />
-        </TabPanel>
-        <TabPanel value={value} index={2} dir={theme.direction}>
-          <PaymentDetails />
-        </TabPanel>
-      </SwipeableViews>
-    </Box>
-  );
+  let formStep;
+
+  switch (step) {
+    case 0:
+      formStep = (
+        <BookDetails
+          step={step}
+          setStep={setStep}
+          setBook={setBook}
+          setUnitPrice={setUnitPrice}
+          setTotalPrice={setTotalPrice}
+          setUnitReq={setUnitReq}
+          setAll={setAll}
+          setBookId={setBookId}
+        ></BookDetails>
+      );
+      break;
+    case 1:
+      formStep = (
+        <BuyerDetails
+          step={step}
+          setStep={setStep}
+          setBuyId={setBuyId}
+        ></BuyerDetails>
+      );
+      break;
+    case 2:
+      formStep = (
+        <PaymentDetails
+          step={step}
+          setStep={setStep}
+          unitReq={unitReq}
+          totalPrice={totalPrice}
+          unitPrice={unitPrice}
+          allUnits={allUnits}
+          buyId={buyId}
+          bookId={bookId}
+        ></PaymentDetails>
+      );
+      break;
+  }
+
+  return <Box centered>{formStep}</Box>;
 };
 
 export default Reserve;

@@ -23,7 +23,15 @@ const formatResult = (item) => {
   );
 };
 
-const BookDetails = () => {
+const BookDetails = ({
+  step,
+  setStep,
+  setUnitPrice,
+  setTotalPrice,
+  setUnitReq,
+  setAll,
+  setBookId,
+}) => {
   let { id } = useParams();
 
   const [publisher, setPublisher] = useState(" ");
@@ -33,37 +41,15 @@ const BookDetails = () => {
   const [listBooks, setListBooks] = useState([]);
   const [avlUnits, setAvlUnits] = useState();
   const [unitsReq, setUnitsReq] = useState();
-
+  const [book, setBook] = useState();
   useEffect(() => {
-    console.log(id);
-    if (id != undefined) {
-      axios
-        .get(`http://localhost:3001/books/${id}`)
-        .then((res) => {
-          setPublisher(res.BookPublisher);
-          setAvlUnits(res.Units);
-          setAuthor(res.BookAuthor);
-          setDate(res.PublishDate);
-          setPrice(res.Price);
-          console.log(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else if (id == undefined) {
-      console.log("test");
-      axios
-        .get("http://localhost:3001/books")
-        .then((res) => {
-          setListBooks(res.data);
-          console.log(listBooks);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+    async function getResults() {
+      const results = await axios.get(`http://localhost:3001/books`);
+      setListBooks(results.data.books);
     }
+    getResults();
   }, []);
-
+  console.log(listBooks);
   const handleOnSearch = (string, results) => {
     console.log(string, results);
   };
@@ -74,15 +60,26 @@ const BookDetails = () => {
     setAuthor(item.BookAuthor);
     setDate(item.PublishDate);
     setPrice(item.Price);
+    setBook(item);
     console.log(item);
   };
 
   const isUnitsValid = (units) => {
-    return units <= 0 || units >= avlUnits;
+    return units <= 0 || units > avlUnits;
   };
 
   const handelDate = (newDate) => {
     setDate(newDate);
+  };
+
+  const onSubmit = () => {
+    setStep(step + 1);
+    setUnitPrice(book.Price);
+    setTotalPrice(unitsReq * parseInt(book.Price));
+    setBook(book);
+    setUnitReq(unitsReq);
+    setAll(book.Units);
+    setBookId(book.id);
   };
 
   return (
@@ -192,7 +189,7 @@ const BookDetails = () => {
         value={unitsReq}
         onChange={(e) => setUnitsReq(e.target.value)}
       />
-      <Button className="submit" variant="contained">
+      <Button className="submit" variant="contained" onClick={() => onSubmit()}>
         Save and continute
       </Button>
     </Box>

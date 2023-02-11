@@ -10,7 +10,17 @@ import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import "../styles.css";
-const PaymentDetails = () => {
+import { useAsyncError } from "react-router-dom";
+const PaymentDetails = ({
+  step,
+  setStep,
+  unitPrice,
+  totalPrice,
+  unitReq,
+  allUnits,
+  buyId,
+  bookId,
+}) => {
   const author_mock = ["Cash", "Credit Card", "Paypal"];
   const [paymentMethod, setPayment] = useState();
   const [numberUnits, setNumberUnits] = useState();
@@ -20,12 +30,26 @@ const PaymentDetails = () => {
     setPayment(event.target.value);
   };
 
-  const onSubmit = () => {
+  let newUnits = () => {
+    console.log(allUnits);
+    console.log(unitReq);
+    let num = parseInt(allUnits) - parseInt(unitReq);
+    return num;
+  };
+
+  const onSubmit = async () => {
+    const res = await axios
+      .put(`http://localhost:3001/books/${bookId}`, { Units: newUnits() })
+      .then((res) => console.log(res));
+    console.log(res);
+    console.log(newUnits());
     axios.post("http://localhost:3001/reserves", {
       PaymentMethod: paymentMethod,
-      numberOfUnits: numberUnits,
-      unitPrice: price,
-      totalPrice: numberUnits * price,
+      numberOfUnits: unitReq,
+      unitPrice: unitPrice,
+      totalPrice: totalPrice,
+      BookId: bookId,
+      BuyerId: buyId,
     });
   };
 
@@ -49,21 +73,21 @@ const PaymentDetails = () => {
 
       <TextField
         id="avilable-units"
-        label="Number of Units"
         autoComplete="off"
         variant="outlined"
-        onChange={(e) => setNumberUnits(e.target.value)}
-        value={numberUnits}
+        value={unitReq}
+        disabled={true}
       />
       <FormControl fullWidth sx={{ m: 1 }}>
         <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
         <OutlinedInput
           id="outlined-adornment-amount"
-          value={price}
+          value={unitPrice}
           placeholder="Price"
           onChange={(e) => setPrice(e.target.value)}
           startAdornment={<InputAdornment position="start">$</InputAdornment>}
           label="Amount"
+          disabled={true}
         />
       </FormControl>
       <FormControl fullWidth sx={{ m: 1 }}>
@@ -71,7 +95,7 @@ const PaymentDetails = () => {
         <OutlinedInput
           id="outlined-adornment-amount"
           autoComplete="off"
-          value={price * numberUnits}
+          value={totalPrice}
           startAdornment={<InputAdornment position="start">$</InputAdornment>}
           label="Total Amount"
           disabled={true}
