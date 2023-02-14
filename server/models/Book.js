@@ -3,10 +3,12 @@ module.exports = (sequelize, DataTypes) => {
     BookId: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
     BookTitle: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
     BookPublisher: {
       type: DataTypes.STRING,
