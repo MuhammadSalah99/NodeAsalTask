@@ -12,7 +12,10 @@ import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import Dialog from "@mui/material/Dialog";
-import { Input } from "@mui/material";
+
+import { useForm, SubmitHandler } from "react-hook-form";
+import { ToastContainer, toast, Zoom, Bounce } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import "./styles.css";
 
@@ -20,7 +23,6 @@ import AddNewPublisher from "./dialouges/AddNewPublisher";
 import AddNewAuthor from "./dialouges/AddNewAuthor";
 import TagInput from "./tag input/TagInput";
 import { isUnitless } from "@mui/material/styles/cssUtils";
-import { useForm, Controller } from "react-hook-form";
 
 const AddBook = () => {
   const [listOfPublisher, setListOfPublisher] = useState([""]);
@@ -81,6 +83,14 @@ const AddBook = () => {
     setDate(newDate);
   };
 
+  const successToast = () => {
+    toast("success custom Toast", {
+      className: "custom-toast",
+      draggable: true,
+      position: toast.POSITION.TOP_CENTER,
+    });
+  };
+
   const onSubmit = () => {
     axios
       .post("http://localhost:3001/books", {
@@ -97,11 +107,25 @@ const AddBook = () => {
         PublisherId: publisherId ? publisherId : listOfPublisher.length,
       })
       .then((res) => {
+        if (res.status === 200)
+          toast.success(`${bookTitle} has been added to your library`);
         console.log(res);
       })
       .catch((err) => {
+        // toast.success(`${bookTitle} has been added to your library`);
+
         console.log(err);
       });
+
+    setBookId("");
+    setBookTitle("");
+    setPublisher("");
+    setAuthor("");
+    setDate(new Date(""));
+    setUnits("");
+    setPrice("");
+    setTags([]);
+    setPdfFile("");
   };
 
   const validate = (data) => {
@@ -114,6 +138,7 @@ const AddBook = () => {
 
   return (
     <div className="add-book">
+      <ToastContainer draggable={false} transition={Zoom} autoClose={5000} />
       <h1>Add a new book</h1>
       <Box component="form" className="add-form">
         <TextField
@@ -175,7 +200,7 @@ const AddBook = () => {
         </div>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DesktopDatePicker
-            label="Date desktop"
+            label="Publish Date"
             inputFormat="MM/dd/yyyy"
             value={date}
             onChange={handelDate}
@@ -266,7 +291,6 @@ const AddBook = () => {
             label="Amount"
           />
         </FormControl>
-        {bookId}
         <Button className="submit" variant="contained" onClick={onSubmit}>
           Submit Book
         </Button>
