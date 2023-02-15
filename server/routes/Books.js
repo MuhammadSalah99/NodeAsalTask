@@ -3,7 +3,7 @@ const router = express.Router();
 
 const { Book } = require("../models");
 const { Op } = require("sequelize");
-
+const ErorrResposnse = require("../utils/errorResponse");
 const getPagination = (page, size) => {
   const limit = size ? +size : 5;
   const offset = page ? page * limit : 1;
@@ -258,7 +258,7 @@ router.post("/", (req, res, next) => {
       res.json({ book: book, sucess: true });
     })
     .catch((err) => {
-      next(err);
+      next(new ErorrResposnse(`Erorr with posting a new book ${err}`, 400));
     });
 });
 module.exports = router;
