@@ -8,11 +8,10 @@ module.exports = (sequelize, DataTypes) => {
     BookTitle: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
     },
     BookPublisher: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     PublishDate: {
       type: DataTypes.DATEONLY,

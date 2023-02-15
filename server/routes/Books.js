@@ -249,10 +249,16 @@ router.put("/:id", function (req, res, next) {
     })
     .catch(next);
 });
-router.post("/", (req, res) => {
+router.post("/", (req, res, next) => {
   const book = req.body;
-  Book.create(book);
-  console.log(book);
-  res.json(book);
+  Book.create(book)
+    .then((ress) => {
+      console.log(res);
+      console.log(book);
+      res.json({ book: book, sucess: true });
+    })
+    .catch((err) => {
+      next(err);
+    });
 });
 module.exports = router;
