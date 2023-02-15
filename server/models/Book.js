@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
     Book.hasMany(models.Reserve);
   };
   Book.associate = (models) => {
-    Book.belongsToMany(models.Tag, { through: "Book-Tags" });
+    Book.hasMany(models.Tag);
   };
 
   return Book;
