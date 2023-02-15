@@ -8,11 +8,10 @@ module.exports = (sequelize, DataTypes) => {
     BookTitle: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
     },
     BookPublisher: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     PublishDate: {
       type: DataTypes.DATEONLY,
@@ -26,10 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    Tags: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+
     Units: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -42,6 +38,9 @@ module.exports = (sequelize, DataTypes) => {
 
   Book.associate = (models) => {
     Book.hasMany(models.Reserve);
+  };
+  Book.associate = (models) => {
+    Book.hasMany(models.Tag);
   };
 
   return Book;

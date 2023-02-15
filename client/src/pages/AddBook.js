@@ -107,14 +107,14 @@ const AddBook = () => {
         PublisherId: publisherId ? publisherId : listOfPublisher.length,
       })
       .then((res) => {
-        if (res.status === 200)
-          toast.success(`${bookTitle} has been added to your library`);
+        toast.success(`${bookTitle} has been added to your library!`);
         console.log(res);
       })
       .catch((err) => {
-        // toast.success(`${bookTitle} has been added to your library`);
+        // toast.fail(`${bookTitle} has been added to your library`);
 
         console.log(err);
+        toast.error("BookId already exist!");
       });
 
     setBookId("");

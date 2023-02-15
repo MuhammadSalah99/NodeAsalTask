@@ -11,12 +11,14 @@ const publisherRouter = require("./routes/Publishers");
 const authorRouter = require("./routes/Authors");
 const buyerRouter = require("./routes/Buyers");
 const reserveRouter = require("./routes/Reservs");
-
+const erorrHandler = require("./middleware/error");
 app.use("/books", bookRouter);
 app.use("/publishers", publisherRouter);
 app.use("/authors", authorRouter);
 app.use("/buyers", buyerRouter);
 app.use("/reserves", reserveRouter);
+
+app.use(erorrHandler);
 
 const PORT = 3001;
 
