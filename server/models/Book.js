@@ -25,10 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    Tags: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+
     Units: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -41,6 +38,9 @@ module.exports = (sequelize, DataTypes) => {
 
   Book.associate = (models) => {
     Book.hasMany(models.Reserve);
+  };
+  Book.associate = (models) => {
+    Book.belongsToMany(models.Tag, { through: "Book-Tags" });
   };
 
   return Book;
