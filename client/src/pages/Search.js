@@ -84,38 +84,119 @@ const Search = () => {
   const handleSearch = (num) => {
     switch (searchType) {
       case "Any":
-        axios
-          .get(
-            `http://localhost:3001/books/search/${searchTerm}?page=${num}&size=4&priceStart=${priceStart}&priceEnd=${priceEnd}&unitStart=${unitStart}&unitEnd=${unitEnd}`
-          )
-          .then((res) => {
-            let books = res.data.books;
-            console.log(res.data);
-            setBooks(books);
-            setListBooks(res.data.totalPages);
-            makePages(res.data.totalPages);
-            setPages(num);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+        if (
+          priceStart === "" &&
+          priceEnd === "" &&
+          unitStart === "" &&
+          unitEnd === ""
+        ) {
+          axios
+            .get(
+              `http://localhost:3001/books/search/${searchTerm}?page=${num}&size=4`
+            )
+            .then((res) => {
+              let books = res.data.books;
+              console.log(res.data);
+              setBooks(books);
+              setListBooks(res.data.totalPages);
+              makePages(res.data.totalPages);
+              setPages(num);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+
+        if (
+          priceStart != "" &&
+          priceEnd != "" &&
+          unitStart === "" &&
+          unitEnd === ""
+        ) {
+          axios
+            .get(
+              `http://localhost:3001/books/search/${searchTerm}?page=${num}&size=4&priceStart=${priceStart}&priceEnd=${priceEnd}`
+            )
+            .then((res) => {
+              let books = res.data.books;
+              console.log(res.data);
+              setBooks(books);
+              setListBooks(res.data.totalPages);
+              makePages(res.data.totalPages);
+              setPages(num);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+        if (
+          priceStart === "" &&
+          priceEnd === "" &&
+          unitStart != "" &&
+          unitEnd != ""
+        ) {
+          axios
+            .get(
+              `http://localhost:3001/books/search/${searchTerm}?page=${num}&size=4&unitStart=${unitStart}&unitEnd=${unitEnd}`
+            )
+            .then((res) => {
+              let books = res.data.books;
+              console.log(res.data);
+              setBooks(books);
+              setListBooks(res.data.totalPages);
+              makePages(res.data.totalPages);
+              setPages(num);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
         break;
       case "Book title":
-        axios
-          .get(
-            `http://localhost:3001/books/searchTitle/${searchTerm}?page=${num}&size=4&priceStart=${priceStart}&priceEnd=${priceEnd}&unitStart=${unitStart}&unitEnd=${unitEnd}`
-          )
-          .then((res) => {
-            let books = res.data.books;
-            console.log(res.data);
-            setBooks(books);
-            setListBooks(res.data.totalPages);
-            makePages(res.data.totalPages);
-            setPages(num);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+        if (
+          priceStart === "" &&
+          priceEnd === "" &&
+          unitStart === "" &&
+          unitEnd === ""
+        ) {
+          axios
+            .get(
+              `http://localhost:3001/books/searchTitle/${searchTerm}?page=${num}&size=4`
+            )
+            .then((res) => {
+              let books = res.data.books;
+              console.log(res.data);
+              setBooks(books);
+              setListBooks(res.data.totalPages);
+              makePages(res.data.totalPages);
+              setPages(num);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+        if (
+          priceStart != "" &&
+          priceEnd != "" &&
+          unitStart === "" &&
+          unitEnd === ""
+        ) {
+          axios
+            .get(
+              `http://localhost:3001/books/searchTitle/${searchTerm}?page=${num}&size=4&priceStart=${priceStart}&priceEnd=${priceEnd}`
+            )
+            .then((res) => {
+              let books = res.data.books;
+              console.log(res.data);
+              setBooks(books);
+              setListBooks(res.data.totalPages);
+              makePages(res.data.totalPages);
+              setPages(num);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
         break;
       case "Book Publisher":
         axios

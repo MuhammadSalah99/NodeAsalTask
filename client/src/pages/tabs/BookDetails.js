@@ -26,8 +26,11 @@ const formatResult = (item) => {
 const BookDetails = ({
   step,
   setStep,
+  setBook,
+  book,
   setUnitPrice,
   setTotalPrice,
+  unitReq,
   setUnitReq,
   setAll,
   setBookId,
@@ -40,8 +43,6 @@ const BookDetails = ({
   const [price, setPrice] = useState();
   const [listBooks, setListBooks] = useState([]);
   const [avlUnits, setAvlUnits] = useState();
-  const [unitsReq, setUnitsReq] = useState();
-  const [book, setBook] = useState();
   useEffect(() => {
     async function getResults() {
       const results = await axios.get(`http://localhost:3001/books`);
@@ -75,23 +76,26 @@ const BookDetails = ({
   const onSubmit = () => {
     setStep(step + 1);
     setUnitPrice(book.Price);
-    setTotalPrice(unitsReq * parseInt(book.Price));
+    setTotalPrice(unitReq * parseInt(book.Price));
     setBook(book);
-    setUnitReq(unitsReq);
+    setUnitReq(unitReq);
     setAll(book.Units);
     setBookId(book.id);
   };
 
   return (
     <Box component="form" className="book-details">
+      <label>Search for book id</label>
       <ReactSearchAutocomplete
         items={listBooks}
+        label="Search for book ID"
         onSearch={handleOnSearch}
         autoFocus
         formatResult={formatResult}
-        placeholder="Search for book with ID"
+        placeholder={book.BookId}
         resultStringKeyName="BookId"
         fuseOptions={{ keys: ["BookId"] }}
+        value={book.BookId}
         onSelect={handleOnSelect}
         styling={{
           height: "34px",
@@ -110,13 +114,16 @@ const BookDetails = ({
           zIndex: 1000,
         }}
       />
+      <label>Search for book title:</label>
       <ReactSearchAutocomplete
         items={listBooks}
         onSearch={handleOnSearch}
         autoFocus
-        placeholder="search for book by title"
+        label="Search for book ID"
+        placeholder={book.BookTitle}
         formatResult={formatResult}
         resultStringKeyName="BookTitle"
+        value={book.BookTitle}
         onSelect={handleOnSelect}
         fuseOptions={{ keys: ["BookTitle"] }}
         styling={{
@@ -136,58 +143,57 @@ const BookDetails = ({
           zIndex: 2,
         }}
       />
+      <label>Publisher Name:</label>
       <TextField
         id="publisher-select"
-        label="Select"
-        value={publisher}
+        value={book.BookPublisher}
         disabled={true}
         helperText="Please add the publisher"
       ></TextField>
-
+      <label>Publish Date:</label>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <DesktopDatePicker
-          label="Publish date"
           inputFormat="MM/dd/yyyy"
-          value={date}
+          value={book.PublishDate}
           disabled={true}
           onChange={handelDate}
           renderInput={(params) => <TextField {...params} />}
         />
       </LocalizationProvider>
+      <label>Author Name:</label>
       <TextField
         id="author-select"
-        label="Select"
-        value={author}
+        value={book.BookAuthor}
         helperText="Please add the author"
         disabled={true}
       ></TextField>
-
+      <label>Units:</label>
       <TextField
         id="avilable-units"
         variant="outlined"
-        value={avlUnits}
+        value={book.Units}
         disabled={true}
       />
+      <label>Price:</label>
       <FormControl fullWidth sx={{ m: 1 }}>
         <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
         <OutlinedInput
           id="outlined-adornment-amount"
           disabled={true}
           placeholder="price"
-          value={price}
+          value={book.Price}
           startAdornment={<InputAdornment position="start">$</InputAdornment>}
-          label="Amount"
         />
       </FormControl>
+      <label>Units required:</label>
       <TextField
-        error={isUnitsValid(unitsReq)}
+        error={isUnitsValid(unitReq)}
         id="avilable-units"
-        helperText={isUnitsValid(unitsReq) ? "Incorrect number of copies" : ""}
-        label="Number of Units"
+        helperText={isUnitsValid(unitReq) ? "Incorrect number of copies" : ""}
         variant="outlined"
         autoComplete="off"
-        value={unitsReq}
-        onChange={(e) => setUnitsReq(e.target.value)}
+        value={unitReq}
+        onChange={(e) => setUnitReq(e.target.value)}
       />
       <Button className="submit" variant="contained" onClick={() => onSubmit()}>
         Save and continute

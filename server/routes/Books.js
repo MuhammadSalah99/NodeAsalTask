@@ -5,7 +5,7 @@ const { Book } = require("../models");
 const { Op } = require("sequelize");
 const ErorrResposnse = require("../utils/errorResponse");
 const getPagination = (page, size) => {
-  const limit = size ? +size : 5;
+  const limit = size ? +size : 4;
   const offset = page ? page * limit : 1;
 
   return { limit, offset };
@@ -61,23 +61,112 @@ router.get("/search/:phrase", async (req, res) => {
   const { page, size, priceStart, priceEnd, unitStart, unitEnd } = req.query;
 
   const { limit, offset } = getPagination(page, size);
+  if (priceStart && priceEnd && unitStart && unitEnd) {
+    Book.findAndCountAll({
+      limit,
+      offset,
 
+      where: {
+        [Op.and]: [
+          {
+            Price: { [Op.between]: [parseInt(priceStart), parseInt(priceEnd)] },
+          },
+          { Units: { [Op.between]: [parseInt(unitStart), parseInt(unitEnd)] } },
+          {
+            [Op.or]: [
+              { BookId: { [Op.like]: "%" + phrase + "%" } },
+              { BookTitle: { [Op.like]: "%" + phrase + "%" } },
+              { BookPublisher: { [Op.like]: "%" + phrase + "%" } },
+              { BookAuthor: { [Op.like]: "%" + phrase + "%" } },
+              { PublishDate: { [Op.like]: "%" + phrase + "%" } },
+            ],
+          },
+        ],
+      },
+    })
+      .then((data) => {
+        const response = getPagingData(data, page, limit);
+        res.send(response);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving tutorials.",
+        });
+      });
+  }
+
+  if (priceStart && priceEnd) {
+    Book.findAndCountAll({
+      limit,
+      offset,
+      where: {
+        [Op.and]: [
+          {
+            Price: { [Op.between]: [parseInt(priceStart), parseInt(priceEnd)] },
+          },
+          {
+            [Op.or]: [
+              { BookId: { [Op.like]: "%" + phrase + "%" } },
+              { BookTitle: { [Op.like]: "%" + phrase + "%" } },
+              { BookPublisher: { [Op.like]: "%" + phrase + "%" } },
+              { BookAuthor: { [Op.like]: "%" + phrase + "%" } },
+              { PublishDate: { [Op.like]: "%" + phrase + "%" } },
+            ],
+          },
+        ],
+      },
+    })
+      .then((data) => {
+        const response = getPagingData(data, page, limit);
+        res.send(response);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving tutorials.",
+        });
+      });
+  }
+  if (unitStart && unitEnd) {
+    Book.findAndCountAll({
+      limit,
+      offset,
+      where: {
+        [Op.and]: [
+          { Units: { [Op.between]: [parseInt(unitStart), parseInt(unitEnd)] } },
+          {
+            [Op.or]: [
+              { BookId: { [Op.like]: "%" + phrase + "%" } },
+              { BookTitle: { [Op.like]: "%" + phrase + "%" } },
+              { BookPublisher: { [Op.like]: "%" + phrase + "%" } },
+              { BookAuthor: { [Op.like]: "%" + phrase + "%" } },
+              { PublishDate: { [Op.like]: "%" + phrase + "%" } },
+            ],
+          },
+        ],
+      },
+    })
+      .then((data) => {
+        const response = getPagingData(data, page, limit);
+        res.send(response);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving tutorials.",
+        });
+      });
+  }
   Book.findAndCountAll({
     limit,
     offset,
     where: {
-      [Op.and]: [
-        { Price: { [Op.between]: [parseInt(priceStart), parseInt(priceEnd)] } },
-        { Units: { [Op.between]: [parseInt(unitStart), parseInt(unitEnd)] } },
-        {
-          [Op.or]: [
-            { BookId: { [Op.like]: "%" + phrase + "%" } },
-            { BookTitle: { [Op.like]: "%" + phrase + "%" } },
-            { BookPublisher: { [Op.like]: "%" + phrase + "%" } },
-            { BookAuthor: { [Op.like]: "%" + phrase + "%" } },
-            { PublishDate: { [Op.like]: "%" + phrase + "%" } },
-          ],
-        },
+      [Op.or]: [
+        { BookTitle: { [Op.like]: "%" + phrase + "%" } },
+        { BookPublisher: { [Op.like]: "%" + phrase + "%" } },
+        { BookAuthor: { [Op.like]: "%" + phrase + "%" } },
+        { PublishDate: { [Op.like]: "%" + phrase + "%" } },
       ],
     },
   })
@@ -99,16 +188,36 @@ router.get("/searchId/:BookId", async (req, res) => {
   const BookId = req.params.BookId;
 
   const { limit, offset } = getPagination(page, size);
-
+  if (page || size || priceStart || priceEnd || unitStart || unitEnd) {
+    Book.findAndCountAll({
+      limit,
+      offset,
+      where: {
+        [Op.and]: [
+          { BookId: { [Op.like]: `%${BookId}%` } },
+          {
+            Price: { [Op.between]: [parseInt(priceStart), parseInt(priceEnd)] },
+          },
+          { Units: { [Op.between]: [parseInt(unitStart), parseInt(unitEnd)] } },
+        ],
+      },
+    })
+      .then((data) => {
+        const response = getPagingData(data, page, limit);
+        res.send(response);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving tutorials.",
+        });
+      });
+  }
   Book.findAndCountAll({
     limit,
     offset,
     where: {
-      [Op.and]: [
-        { BookId: { [Op.like]: `%${BookId}%` } },
-        { Price: { [Op.between]: [parseInt(priceStart), parseInt(priceEnd)] } },
-        { Units: { [Op.between]: [parseInt(unitStart), parseInt(unitEnd)] } },
-      ],
+      [Op.and]: [{ BookId: { [Op.like]: `%${BookId}%` } }],
     },
   })
     .then((data) => {
@@ -129,15 +238,86 @@ router.get("/searchPublisher/:BookPublisher", async (req, res) => {
   const BookPublisher = req.params.BookPublisher;
   const { limit, offset } = getPagination(page, size);
 
+  if (priceStart && priceEnd && unitStart && unitEnd) {
+    Book.findAndCountAll({
+      limit,
+      offset,
+      where: {
+        [Op.and]: [
+          { BookPublisher: { [Op.like]: `%${BookPublisher}%` } },
+          {
+            Price: { [Op.between]: [parseInt(priceStart), parseInt(priceEnd)] },
+          },
+          { Units: { [Op.between]: [parseInt(unitStart), parseInt(unitEnd)] } },
+        ],
+      },
+    })
+      .then((data) => {
+        const response = getPagingData(data, page, limit);
+        res.send(response);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving tutorials.",
+        });
+      });
+  }
+
+  if (priceStart && priceEnd) {
+    Book.findAndCountAll({
+      limit,
+      offset,
+      where: {
+        [Op.and]: [
+          { BookPublisher: { [Op.like]: `%${BookPublisher}%` } },
+          {
+            Price: { [Op.between]: [parseInt(priceStart), parseInt(priceEnd)] },
+          },
+        ],
+      },
+    })
+      .then((data) => {
+        const response = getPagingData(data, page, limit);
+        res.send(response);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving tutorials.",
+        });
+      });
+  }
+
+  if (unitStart && unitEnd) {
+    Book.findAndCountAll({
+      limit,
+      offset,
+      where: {
+        [Op.and]: [
+          { BookPublisher: { [Op.like]: `%${BookPublisher}%` } },
+
+          { Units: { [Op.between]: [parseInt(unitStart), parseInt(unitEnd)] } },
+        ],
+      },
+    })
+      .then((data) => {
+        const response = getPagingData(data, page, limit);
+        res.send(response);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving tutorials.",
+        });
+      });
+  }
+
   Book.findAndCountAll({
     limit,
     offset,
     where: {
-      [Op.and]: [
-        { BookPublisher: { [Op.like]: `%${BookPublisher}%` } },
-        { Price: { [Op.between]: [parseInt(priceStart), parseInt(priceEnd)] } },
-        { Units: { [Op.between]: [parseInt(unitStart), parseInt(unitEnd)] } },
-      ],
+      BookPublisher: { [Op.like]: `%${BookPublisher}%` },
     },
   })
     .then((data) => {
@@ -157,16 +337,85 @@ router.get("/searchAuth/:BookAuthor", async (req, res) => {
 
   const BookAuthor = req.params.BookAuthor;
   const { limit, offset } = getPagination(page, size);
+  if (priceStart && priceEnd && unitStart && unitEnd) {
+    Book.findAndCountAll({
+      limit,
+      offset,
+      where: {
+        [Op.and]: [
+          { BookAuthor: { [Op.like]: `%${BookAuthor}%` } },
+          {
+            Price: { [Op.between]: [parseInt(priceStart), parseInt(priceEnd)] },
+          },
+          { Units: { [Op.between]: [parseInt(unitStart), parseInt(unitEnd)] } },
+        ],
+      },
+    })
+      .then((data) => {
+        const response = getPagingData(data, page, limit);
+        res.send(response);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving tutorials.",
+        });
+      });
+  }
+
+  if (priceStart && priceEnd) {
+    Book.findAndCountAll({
+      limit,
+      offset,
+      where: {
+        [Op.and]: [
+          { BookAuthor: { [Op.like]: `%${BookAuthor}%` } },
+          {
+            Price: { [Op.between]: [parseInt(priceStart), parseInt(priceEnd)] },
+          },
+        ],
+      },
+    })
+      .then((data) => {
+        const response = getPagingData(data, page, limit);
+        res.send(response);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving tutorials.",
+        });
+      });
+  }
+
+  if (unitStart && unitEnd) {
+    Book.findAndCountAll({
+      limit,
+      offset,
+      where: {
+        [Op.and]: [
+          { BookAuthor: { [Op.like]: `%${BookAuthor}%` } },
+          { Units: { [Op.between]: [parseInt(unitStart), parseInt(unitEnd)] } },
+        ],
+      },
+    })
+      .then((data) => {
+        const response = getPagingData(data, page, limit);
+        res.send(response);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving tutorials.",
+        });
+      });
+  }
 
   Book.findAndCountAll({
     limit,
     offset,
     where: {
-      [Op.and]: [
-        { BookAuthor: { [Op.like]: `%${BookAuthor}%` } },
-        { Price: { [Op.between]: [parseInt(priceStart), parseInt(priceEnd)] } },
-        { Units: { [Op.between]: [parseInt(unitStart), parseInt(unitEnd)] } },
-      ],
+      BookAuthor: { [Op.like]: `%${BookAuthor}%` },
     },
   })
     .then((data) => {
@@ -188,15 +437,85 @@ router.get("/searchTitle/:BookTitle", async (req, res) => {
 
   const { limit, offset } = getPagination(page, size);
 
+  if (priceStart && priceEnd && unitStart && unitEnd) {
+    Book.findAndCountAll({
+      limit,
+      offset,
+      where: {
+        [Op.and]: [
+          { BookTitle: { [Op.like]: `%${BookTitle}%` } },
+          {
+            Price: { [Op.between]: [parseInt(priceStart), parseInt(priceEnd)] },
+          },
+          { Units: { [Op.between]: [parseInt(unitStart), parseInt(unitEnd)] } },
+        ],
+      },
+    })
+      .then((data) => {
+        const response = getPagingData(data, page, limit);
+        res.send(response);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving tutorials.",
+        });
+      });
+  }
+
+  if (priceStart && priceEnd) {
+    Book.findAndCountAll({
+      limit,
+      offset,
+      where: {
+        [Op.and]: [
+          { BookTitle: { [Op.like]: `%${BookTitle}%` } },
+          {
+            Price: { [Op.between]: [parseInt(priceStart), parseInt(priceEnd)] },
+          },
+        ],
+      },
+    })
+      .then((data) => {
+        const response = getPagingData(data, page, limit);
+        res.send(response);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving tutorials.",
+        });
+      });
+  }
+
+  if (unitStart && unitEnd) {
+    Book.findAndCountAll({
+      limit,
+      offset,
+      where: {
+        [Op.and]: [
+          { BookTitle: { [Op.like]: `%${BookTitle}%` } },
+          { Units: { [Op.between]: [parseInt(unitStart), parseInt(unitEnd)] } },
+        ],
+      },
+    })
+      .then((data) => {
+        const response = getPagingData(data, page, limit);
+        res.send(response);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving tutorials.",
+        });
+      });
+  }
+
   Book.findAndCountAll({
     limit,
     offset,
     where: {
-      [Op.and]: [
-        { BookTitle: { [Op.like]: `%${BookTitle}%` } },
-        { Price: { [Op.between]: [parseInt(priceStart), parseInt(priceEnd)] } },
-        { Units: { [Op.between]: [parseInt(unitStart), parseInt(unitEnd)] } },
-      ],
+      [Op.and]: [{ BookTitle: { [Op.like]: `%${BookTitle}%` } }],
     },
   })
     .then((data) => {
@@ -211,35 +530,35 @@ router.get("/searchTitle/:BookTitle", async (req, res) => {
     });
 });
 
-router.get("/tags/:Tags", async (req, res) => {
-  const { page, size, priceStart, priceEnd, unitStart, unitEnd } = req.query;
+// router.get("/tags/:Tags", async (req, res) => {
+//   const { page, size, priceStart, priceEnd, unitStart, unitEnd } = req.query;
 
-  const Tags = req.params.Tags;
+//   const Tags = req.params.Tags;
 
-  const { limit, offset } = getPagination(page, size);
+//   const { limit, offset } = getPagination(page, size);
 
-  Book.findAndCountAll({
-    limit,
-    offset,
-    where: {
-      [Op.and]: [
-        { Tags: { [Op.like]: "%" + Tags + "%" } },
-        { Price: { [Op.between]: [parseInt(priceStart), parseInt(priceEnd)] } },
-        { Units: { [Op.between]: [parseInt(unitStart), parseInt(unitEnd)] } },
-      ],
-    },
-  })
-    .then((data) => {
-      const response = getPagingData(data, page, limit);
-      res.send(response);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving tutorials.",
-      });
-    });
-});
+//   Book.findAndCountAll({
+//     limit,
+//     offset,
+//     where: {
+//       [Op.and]: [
+//         { Tags: { [Op.like]: "%" + Tags + "%" } },
+//         { Price: { [Op.between]: [parseInt(priceStart), parseInt(priceEnd)] } },
+//         { Units: { [Op.between]: [parseInt(unitStart), parseInt(unitEnd)] } },
+//       ],
+//     },
+//   })
+//     .then((data) => {
+//       const response = getPagingData(data, page, limit);
+//       res.send(response);
+//     })
+//     .catch((err) => {
+//       res.status(500).send({
+//         message:
+//           err.message || "Some error occurred while retrieving tutorials.",
+//       });
+//     });
+// });
 
 router.put("/:id", function (req, res, next) {
   let _id = parseInt(req.params.id);
