@@ -22,6 +22,7 @@ const BookInfro = ({
   setTotalPrice,
   setUnitReq,
   setAll,
+  unitReq,
 }) => {
   let { id } = useParams();
   const [book, setBook] = useState({});
@@ -31,7 +32,6 @@ const BookInfro = ({
   const [price, setPrice] = useState();
   const [listBooks, setListBooks] = useState([]);
   const [avlUnits, setAvlUnits] = useState();
-  const [unitsReq, setUnitsReq] = useState();
   React.useEffect(() => {
     async function getResults() {
       const results = await axios.get(`http://localhost:3001/books/${id}`);
@@ -52,9 +52,8 @@ const BookInfro = ({
   const onSubmit = () => {
     setStep(step + 1);
     setUnitPrice(book.Price);
-    setTotalPrice(unitsReq * parseInt(book.Price));
+    setTotalPrice(unitReq * parseInt(book.Price));
     setBook(book);
-    setUnitReq(unitsReq);
     setAll(book.Units);
   };
 
@@ -113,14 +112,14 @@ const BookInfro = ({
         />
       </FormControl>
       <TextField
-        error={isUnitsValid(unitsReq)}
+        error={isUnitsValid(unitReq)}
         id="avilable-units"
-        helperText={isUnitsValid(unitsReq) ? "Incorrect number of copies" : ""}
+        helperText={isUnitsValid(unitReq) ? "Incorrect number of copies" : ""}
         label="Number of Units"
         variant="outlined"
         autoComplete="off"
-        value={unitsReq}
-        onChange={(e) => setUnitsReq(e.target.value)}
+        value={unitReq}
+        onChange={(e) => setUnitReq(e.target.value)}
       />
       <Button className="submit" variant="contained" onClick={() => onSubmit()}>
         Save and continute

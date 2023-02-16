@@ -10,7 +10,6 @@ import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import "../styles.css";
-import { useAsyncError } from "react-router-dom";
 const PaymentDetails = ({
   step,
   setStep,
@@ -44,7 +43,7 @@ const PaymentDetails = ({
       console.log(res.data[res.data.length - 1].id + 1);
       setBuyId(res.data[res.data.length - 1].id + 1);
     });
-  }, []);
+  }, [setBuyId]);
 
   const onSubmit = async () => {
     axios
