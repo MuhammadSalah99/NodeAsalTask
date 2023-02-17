@@ -179,9 +179,15 @@ width: 29%;
     width: 50%;
     justify-content: space-around;
     margin: auto;
-    height: 80vh;
+    height: 100vh;
 }
 .pagen {
     margin-top: -10px !important;
     padding-bottom: 50px;
 }
+.buttons-ses {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+

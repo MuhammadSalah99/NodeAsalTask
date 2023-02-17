@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
@@ -10,7 +10,6 @@ import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import "../styles.css";
-import { useAsyncError } from "react-router-dom";
 const PaymentDetails = ({
   step,
   setStep,
@@ -20,10 +19,12 @@ const PaymentDetails = ({
   allUnits,
   buyId,
   bookId,
+  buyer,
+  setBuyId,
+  paymentMethod,
+  setPayment,
 }) => {
   const author_mock = ["Cash", "Credit Card", "Paypal"];
-  const [paymentMethod, setPayment] = useState();
-  const [numberUnits, setNumberUnits] = useState();
   const [price, setPrice] = useState();
 
   const handelAuthor = (event) => {
@@ -37,7 +38,23 @@ const PaymentDetails = ({
     return num;
   };
 
+  useEffect(() => {
+    axios.get("http://localhost:3001/buyers").then((res) => {
+      console.log(res.data[res.data.length - 1].id + 1);
+      setBuyId(res.data[res.data.length - 1].id + 1);
+    });
+  }, [setBuyId]);
+
   const onSubmit = async () => {
+    axios
+      .post("http://localhost:3001/buyers", buyer)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
     const res = await axios
       .put(`http://localhost:3001/books/${bookId}`, { Units: newUnits() })
       .then((res) => console.log(res));
@@ -101,10 +118,15 @@ const PaymentDetails = ({
           disabled={true}
         />
       </FormControl>
+      <div className="buttons-ses">
+        <Button variant="contained" onClick={() => setStep(step - 1)}>
+          Previous
+        </Button>
 
-      <Button className="submit" variant="contained" onClick={onSubmit}>
-        Reserve book
-      </Button>
+        <Button className="submit" variant="contained" onClick={onSubmit}>
+          Reserve book
+        </Button>
+      </div>
     </Box>
   );
 };

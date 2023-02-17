@@ -8,36 +8,26 @@ import axios from "axios";
 import Button from "@mui/material/Button";
 
 import "../styles.css";
-const BuyerDetails = ({ step, setStep, setBuyId }) => {
-  const [fullName, setFullName] = useState();
-  const [address, setAddress] = useState();
-  const [phoneNum, setPhoneNum] = useState();
-  const [date, setDate] = useState(new Date(""));
-  const [ID, setID] = useState();
-
+const BuyerDetails = ({
+  step,
+  setStep,
+  setBuyId,
+  fullName,
+  setFullName,
+  address,
+  setAddress,
+  phoneNum,
+  setPhoneNum,
+  date,
+  setDate,
+  ID,
+  setID,
+}) => {
   const handelDate = (newDate) => {
     setDate(newDate);
   };
 
   const onSubmit = () => {
-    axios
-      .post("http://localhost:3001/buyers", {
-        fullName: fullName,
-        address: address,
-        phoneNumber: phoneNum,
-        purchaseDate: date,
-        NationalId: ID,
-      })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    axios.get("http://localhost:3001/buyers").then((res) => {
-      console.log(res.data[res.data.length - 1].id + 1);
-      setBuyId(res.data[res.data.length - 1].id + 1);
-    });
     setStep(step + 1);
   };
 
@@ -91,10 +81,15 @@ const BuyerDetails = ({ step, setStep, setBuyId }) => {
         value={ID}
         onChange={(e) => setID(e.target.value)}
       />
+      <button className="buttons-ses">
+        <Button variant="contained" onClick={() => setStep(step - 1)}>
+          Previous
+        </Button>
 
-      <Button className="submit" variant="contained" onClick={onSubmit}>
-        Save and continute
-      </Button>
+        <Button className="submit" variant="contained" onClick={onSubmit}>
+          Save and continute
+        </Button>
+      </button>
     </Box>
   );
 };
